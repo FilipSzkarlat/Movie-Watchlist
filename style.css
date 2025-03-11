@@ -9,7 +9,8 @@ body {
   font-size: 14px;
 }
 
-header {
+header,
+main {
   display: flex;
   align-items: center;
   padding: 3em;
@@ -74,4 +75,12 @@ nav img {
 
 nav img {
   padding-right: 0;
+}
+
+main {
+  flex-direction: column;
+  justify-content: center;
+  color: #2e2e2f;
+  font-size: 1.25em;
+  height: calc(100vh - 208px);
 }
