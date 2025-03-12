@@ -1,3 +1,4 @@
+/* GENERAL */
 * {
   margin: 0;
   padding: 0;
@@ -9,14 +10,15 @@ body {
   font-size: 14px;
 }
 
+/* COMMON */
 header,
 main {
   display: flex;
   align-items: center;
   padding: 3em;
-  position: relative;
 }
 
+/* HEADER */
 header {
   background-image: url("img/header-bg.png");
   height: 208px;
@@ -36,6 +38,7 @@ header a {
   font-weight: bold;
 }
 
+/* NAV */
 nav {
   display: flex;
   justify-content: center;
@@ -67,6 +70,10 @@ nav input {
   color: #a5a5a5;
 }
 
+nav input:focus {
+  outline: none;
+}
+
 nav input,
 nav img {
   padding: 0.75em;
@@ -77,10 +84,51 @@ nav img {
   padding-right: 0;
 }
 
+/* MAIN */
 main {
   flex-direction: column;
   justify-content: center;
   color: #2e2e2f;
   font-size: 1.25em;
-  height: calc(100vh - 208px);
+  min-height: calc(100vh - 208px);
+}
+
+main img {
+  width: 10vw;
+}
+
+.movie {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  margin-top: 1em;
+  padding: 1em;
+  border-radius: 6px;
+  color: white;
+}
+
+main h2 {
+  font-size: 1.25em;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.title img {
+  height: 1em;
+  width: 1em;
+}
+
+.add-movie-btn {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+  color: white;
+  background-color: transparent;
+  border: none;
+  gap: 0.5em;
+  cursor: pointer;
 }
