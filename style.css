@@ -8,6 +8,7 @@
 body {
   background-color: #121212;
   font-size: 14px;
+  font-family: "Inter", sans-serif;
 }
 
 /* COMMON */
@@ -15,7 +16,7 @@ header,
 main {
   display: flex;
   align-items: center;
-  padding: 3em;
+  padding: 2em;
 }
 
 /* HEADER */
@@ -100,16 +101,15 @@ main img {
 .movie {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 1.5em;
   margin-top: 1em;
-  padding: 1em;
   border-radius: 6px;
   color: white;
 }
 
 main h2 {
   font-size: 1.5em;
-  margin-right: 0.5em;
 }
 
 .title,
@@ -136,6 +136,14 @@ main h2 {
   cursor: pointer;
 }
 
+.poster {
+  width: 15vw;
+}
+
+.movie-info {
+  width: 100%;
+}
+
 .general-info {
   width: 100%;
   justify-content: space-between;
@@ -155,4 +163,24 @@ main h2 {
 .watchlist-btn img {
   height: 16px;
   width: 16px;
+}
+
+.more-info {
+  color: #a5a5a5;
+}
+
+.read-more-info {
+  margin-left: 0.5em;
+  color: white;
+  cursor: pointer;
+}
+
+.full-plot {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  .movie {
+    width: 50%;
+  }
 }
