@@ -7,7 +7,14 @@ let genre = "dupa";
 let plot = "dupa";
 let fullPlot = "dupa";
 
-searchBtn.addEventListener("click", getMovie);
+searchBtn.addEventListener("click", getMovie());
+searchInput.addEventListener("keydown", (e) => {
+  console.log(e.key);
+  if (e.key === "Enter") {
+    getMovie();
+  }
+});
+
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("read-more-info")) {
     e.target.parentElement.style.display = "none";
