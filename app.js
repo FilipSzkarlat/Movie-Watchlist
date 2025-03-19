@@ -1,15 +1,60 @@
 const searchInput = document.getElementById("search");
 const searchBtn = document.getElementById("search-btn");
 const mainEl = document.querySelector("main");
+const displayWatchlist = document.getElementById("display-watchlist");
 let rating = "dupa";
 let runtime = "dupa";
 let genre = "dupa";
 let plot = "dupa";
 let fullPlot = "dupa";
+let watchlistArr = [];
 
-searchBtn.addEventListener("click", getMovie());
+// check if there is a watchlist in the localStorage and if the user is on the watchlist page
+if (
+  localStorage.getItem("watchlist") &&
+  window.location.href === "http://127.0.0.1:5500/watchlist.html"
+) {
+  // get the watchlist array from the localStorage
+  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+  // display the watchlist
+  displayWatchlist.innerHTML = "";
+  watchlistArr.forEach((element) => {
+    displayWatchlist.innerHTML += element;
+  });
+}
+
+// add movie to watchlist
+mainEl.addEventListener("click", (e) => {
+  // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
+  if (localStorage.getItem("watchlist")) {
+    watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+  }
+
+  // add the movie to the watchlist by clicking the watchlist button
+  if (e.target.parentElement.classList.contains("watchlist-btn")) {
+    // add the movie to the watchlist array
+    console.log(
+      e.target.parentElement.parentElement.parentElement.parentElement.innerHTML
+    );
+    watchlistArr.push(
+      e.target.parentElement.parentElement.parentElement.parentElement.innerHTML
+    );
+    // save the watchlist array to the localStorage
+    localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+    e.target.parentElement.parentElement.parentElement.classList.toggle(
+      "watchlist"
+    );
+  }
+});
+document.addEventListener("storage", () => {
+  displayWatchlist.innerHTML = localStorage.getItem("watchlist");
+});
+
+// get the movies by clicking the search button
+searchBtn.addEventListener("click", getMovie);
+// get the movies by pressing the enter key
 searchInput.addEventListener("keydown", (e) => {
-  console.log(e.key);
   if (e.key === "Enter") {
     getMovie();
   }
@@ -52,7 +97,7 @@ async function getMovie() {
                   <p class='genre'>${genre}</p>
                   <button class='watchlist-btn'>
                     <img src='img/plus-icon.png'/>
-                    <p>Watchlist</p>
+                    <p class='padding-left'>Watchlist</p>
                   </button>
                 </div>
                 <div class='more-info'>
@@ -65,6 +110,7 @@ async function getMovie() {
   });
 }
 
+// get the more info about the movie using the imdbID
 async function getMoreInfo(imdbID) {
   const res = await fetch(
     `http://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
