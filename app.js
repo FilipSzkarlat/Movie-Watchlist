@@ -33,11 +33,8 @@ mainEl.addEventListener("click", (e) => {
   // add the movie to the watchlist by clicking the watchlist button
   if (e.target.parentElement.classList.contains("watchlist-btn")) {
     // add the movie to the watchlist array
-    console.log(
-      e.target.parentElement.parentElement.parentElement.parentElement.innerHTML
-    );
     watchlistArr.push(
-      e.target.parentElement.parentElement.parentElement.parentElement.innerHTML
+      e.target.parentElement.parentElement.parentElement.parentElement.outerHTML
     );
     // save the watchlist array to the localStorage
     localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
