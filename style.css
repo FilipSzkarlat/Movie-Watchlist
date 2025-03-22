@@ -37,6 +37,12 @@ header a {
   color: white;
   text-decoration: none;
   font-weight: bold;
+  transition: ease all 0.5s;
+}
+
+header a:hover,
+header a:focus {
+  transform: scale(1.05);
 }
 
 /* NAV */
@@ -140,6 +146,13 @@ main h2 {
   border: none;
   gap: 0.5em;
   cursor: pointer;
+  text-decoration: none;
+  transition: ease all 0.5s;
+}
+
+.add-movie-btn:hover,
+.add-movie-btn:focus {
+  transform: scale(1.05);
 }
 
 .poster {
