@@ -39,9 +39,45 @@ mainEl.addEventListener("click", (e) => {
     // save the watchlist array to the localStorage
     localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
 
-    e.target.parentElement.parentElement.parentElement.classList.toggle(
-      "watchlist"
+    e.target.parentElement.classList.toggle("hidden");
+    e.target.parentElement.parentElement
+      .querySelector(".remove-btn")
+      .classList.toggle("hidden");
+  }
+});
+document.addEventListener("storage", () => {
+  displayWatchlist.innerHTML = localStorage.getItem("watchlist");
+});
+
+// add movie to watchlist
+mainEl.addEventListener("click", (e) => {
+  // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
+  if (localStorage.getItem("watchlist")) {
+    watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+  }
+
+  // remove the movie from the watchlist by clicking the remove button
+  if (e.target.parentElement.classList.contains("remove-btn")) {
+    // remove the movie from the watchlist array
+    console.log(watchlistArr);
+    watchlistArr = watchlistArr.filter(
+      (element) =>
+        element !==
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .outerHTML
     );
+    console.log(watchlistArr);
+
+    console.log(
+      e.target.parentElement.parentElement.parentElement.parentElement.outerHTML
+    );
+    // save the watchlist array to the localStorage
+    localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+    e.target.parentElement.classList.toggle("hidden");
+    e.target.parentElement.parentElement
+      .querySelector(".watchlist-btn")
+      .classList.toggle("hidden");
   }
 });
 document.addEventListener("storage", () => {
@@ -98,6 +134,10 @@ async function getMovie() {
                     <button class='watchlist-btn'>
                       <img src='img/plus-icon.png'/>
                       <p class='padding-left'>Watchlist</p>
+                    </button>
+                    <button class='remove-btn hidden'>
+                      <img src='img/minus-icon.png'/>
+                      <p class='padding-left'>Remove</p>
                     </button>
                   </div>
                   <div class='more-info'>
