@@ -78,33 +78,37 @@ async function getMovie() {
   const data = await res.json();
   console.log(data);
   mainEl.innerHTML = "";
-  data.Search.forEach(async (element) => {
-    await getMoreInfo(element.imdbID);
-    mainEl.innerHTML += `
-        <div class="movie">
-            <img class='poster' src="${element.Poster}" alt="${element.Title}" />
-            <div class="movie-info">
-                <div class='title'>
-                    <h2>${element.Title}</h2>
-                    <img src='img/star-icon.png'/>
-                    <p class="rating">${rating}</p>
-                </div>
-                <div class='general-info'>
-                  <p class='runtime'>${runtime}</p>
-                  <p class='genre'>${genre}</p>
-                  <button class='watchlist-btn'>
-                    <img src='img/plus-icon.png'/>
-                    <p class='padding-left'>Watchlist</p>
-                  </button>
-                </div>
-                <div class='more-info'>
-                  <p class='plot'>${plot}</p>
-                  <p class='full-plot'>${fullPlot}</p>
-                </div>
-                
-            </div>
-        </div>`;
-  });
+  if (data.Search === undefined) {
+    mainEl.innerHTML = `<p>Unable to find what you’re looking for. Please try another search.</p>`;
+  } else {
+    data.Search.forEach(async (element) => {
+      await getMoreInfo(element.imdbID);
+      mainEl.innerHTML += `
+          <div class="movie">
+              <img class='poster' src="${element.Poster}" alt="${element.Title}" />
+              <div class="movie-info">
+                  <div class='title'>
+                      <h2>${element.Title}</h2>
+                      <img src='img/star-icon.png'/>
+                      <p class="rating">${rating}</p>
+                  </div>
+                  <div class='general-info'>
+                    <p class='runtime'>${runtime}</p>
+                    <p class='genre'>${genre}</p>
+                    <button class='watchlist-btn'>
+                      <img src='img/plus-icon.png'/>
+                      <p class='padding-left'>Watchlist</p>
+                    </button>
+                  </div>
+                  <div class='more-info'>
+                    <p class='plot'>${plot}</p>
+                    <p class='full-plot'>${fullPlot}</p>
+                  </div>
+                  
+              </div>
+          </div>`;
+    });
+  }
 }
 
 // get the more info about the movie using the imdbID
