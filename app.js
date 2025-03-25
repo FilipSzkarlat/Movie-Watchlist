@@ -12,17 +12,11 @@ let watchlistArr = [];
 // check if there is a watchlist in the localStorage and if the user is on the watchlist page
 if (
   localStorage.getItem("watchlist") &&
-  window.location.href === "http://127.0.0.1:5500/watchlist.html"
+  window.location.href.includes("watchlist.html")
 ) {
-  // get the watchlist array from the localStorage
-  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
-  // display the watchlist
-  displayWatchlist.innerHTML = "";
-  watchlistArr.forEach((element) => {
-    displayWatchlist.innerHTML += element;
-  });
+  // display the movies from the watchlist
+  displayWatchlistMovies();
 }
-
 // add movie to watchlist
 mainEl.addEventListener("click", (e) => {
   // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
@@ -32,10 +26,12 @@ mainEl.addEventListener("click", (e) => {
 
   // add the movie to the watchlist by clicking the watchlist button
   if (e.target.parentElement.classList.contains("watchlist-btn")) {
+    const movieId = e.target.closest(".movie").dataset.id; // Get imdbID
     // add the movie to the watchlist array
-    watchlistArr.push(
-      e.target.parentElement.parentElement.parentElement.parentElement.outerHTML
-    );
+    if (!watchlistArr.includes(movieId)) {
+      watchlistArr.push(movieId);
+    }
+
     // save the watchlist array to the localStorage
     localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
 
@@ -45,53 +41,49 @@ mainEl.addEventListener("click", (e) => {
       .classList.toggle("hidden");
   }
 });
+
 document.addEventListener("storage", () => {
   displayWatchlist.innerHTML = localStorage.getItem("watchlist");
 });
 
-// add movie to watchlist
+// remove movie from watchlist
 mainEl.addEventListener("click", (e) => {
   // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
   if (localStorage.getItem("watchlist")) {
     watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
   }
-
-  // remove the movie from the watchlist by clicking the remove button
   if (e.target.parentElement.classList.contains("remove-btn")) {
-    // remove the movie from the watchlist array
-    console.log(watchlistArr);
-    watchlistArr = watchlistArr.filter(
-      (element) =>
-        element !==
-        e.target.parentElement.parentElement.parentElement.parentElement
-          .outerHTML
-    );
-    console.log(watchlistArr);
+    const movieId = e.target.closest(".movie").dataset.id;
 
-    console.log(
-      e.target.parentElement.parentElement.parentElement.parentElement.outerHTML
-    );
-    // save the watchlist array to the localStorage
+    // Remove the movie by filtering out its imdbID
+    watchlistArr = watchlistArr.filter((id) => id !== movieId);
+
     localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
 
     e.target.parentElement.classList.toggle("hidden");
-    e.target.parentElement.parentElement
-      .querySelector(".watchlist-btn")
-      .classList.toggle("hidden");
+    if (window.location.href.includes("index.html")) {
+      e.target.parentElement.parentElement
+        .querySelector(".watchlist-btn")
+        .classList.toggle("hidden");
+    }
+    displayWatchlistMovies();
   }
 });
+
 document.addEventListener("storage", () => {
   displayWatchlist.innerHTML = localStorage.getItem("watchlist");
 });
 
 // get the movies by clicking the search button
-searchBtn.addEventListener("click", getMovie);
-// get the movies by pressing the enter key
-searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    getMovie();
-  }
-});
+if (window.location.href.includes("index.html")) {
+  searchBtn.addEventListener("click", getMovie);
+  // get the movies by pressing the enter key
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      getMovie();
+    }
+  });
+}
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("read-more-info")) {
@@ -120,7 +112,7 @@ async function getMovie() {
     data.Search.forEach(async (element) => {
       await getMoreInfo(element.imdbID);
       mainEl.innerHTML += `
-          <div class="movie">
+          <div class="movie" data-id="${element.imdbID}">
               <img class='poster' src="${element.Poster}" alt="${element.Title}" />
               <div class="movie-info">
                   <div class='title'>
@@ -169,4 +161,41 @@ async function getMoreInfo(imdbID) {
       `<span class='read-more-info'>Read more</span>`;
   }
   plot = data.Plot;
+}
+
+function displayWatchlistMovies() {
+  // check if the watchlist is empty
+  if (localStorage.getItem("watchlist") === "[]") {
+    mainEl.innerHTML = `<p>Your watchlist is looking a little empty...</p>
+      <a href="index.html" class="add-movie-btn">
+        <img class="icon" src="img/plus-icon.png" alt="simple plus icon" />
+        <p>Let's add some movies!</p>
+      </a>`;
+  } else {
+    watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+
+    displayWatchlist.innerHTML = "";
+
+    watchlistArr.forEach(async (movieId) => {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
+      );
+      const data = await res.json();
+
+      displayWatchlist.innerHTML += `
+    <div class="movie" data-id="${data.imdbID}">
+      <img class='poster' src="${data.Poster}" alt="${data.Title}" />
+      <div class="movie-info">
+        <h2>${data.Title}</h2>
+        <p class="rating">${data.imdbRating}</p>
+        <p class='runtime'>${data.Runtime}</p>
+        <p class='genre'>${data.Genre}</p>
+        <button class='remove-btn'>
+          <img src='img/minus-icon.png'/>
+          <p class='padding-left'>Remove</p>
+        </button>
+      </div>
+    </div>`;
+    });
+  }
 }
