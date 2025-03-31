@@ -66,7 +66,10 @@ mainEl.addEventListener("click", (e) => {
         .querySelector(".watchlist-btn")
         .classList.toggle("hidden");
     }
-    displayWatchlistMovies();
+    // remove the movie from the watchlist without reloading the page
+    if (window.location.href.includes("watchlist.html")) {
+      e.target.parentElement.parentElement.parentElement.parentElement.remove();
+    }
   }
 });
 
@@ -87,12 +90,7 @@ if (window.location.href.includes("index.html")) {
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("read-more-info")) {
-    e.target.parentElement.style.display = "none";
-    console.log(
-      (e.target.parentElement.parentElement.querySelector(
-        ".full-plot"
-      ).style.display = "block")
-    );
+    e.target.parentElement.innerHTML = fullPlot;
   }
 });
 
@@ -104,42 +102,50 @@ async function getMovie() {
     )}&`
   );
   const data = await res.json();
-  console.log(data);
+
   mainEl.innerHTML = "";
+
   if (data.Search === undefined) {
     mainEl.innerHTML = `<p>Unable to find what you’re looking for. Please try another search.</p>`;
   } else {
-    data.Search.forEach(async (element) => {
+    //  Make sure to declare `moviePromises` before using it
+    let moviePromises = data.Search.map(async (element) => {
       await getMoreInfo(element.imdbID);
-      mainEl.innerHTML += `
-          <div class="movie" data-id="${element.imdbID}">
-              <img class='poster' src="${element.Poster}" alt="${element.Title}" />
-              <div class="movie-info">
-                  <div class='title'>
-                      <h2>${element.Title}</h2>
-                      <img src='img/star-icon.png'/>
-                      <p class="rating">${rating}</p>
-                  </div>
-                  <div class='general-info'>
-                    <p class='runtime'>${runtime}</p>
-                    <p class='genre'>${genre}</p>
-                    <button class='watchlist-btn'>
-                      <img src='img/plus-icon.png'/>
-                      <p class='padding-left'>Watchlist</p>
-                    </button>
-                    <button class='remove-btn hidden'>
-                      <img src='img/minus-icon.png'/>
-                      <p class='padding-left'>Remove</p>
-                    </button>
-                  </div>
-                  <div class='more-info'>
-                    <p class='plot'>${plot}</p>
-                    <p class='full-plot'>${fullPlot}</p>
-                  </div>
-                  
-              </div>
-          </div>`;
+      return `
+        <div class="movie" data-id="${element.imdbID}">
+            <img class='poster' src="${element.Poster}" alt="${element.Title}" />
+            <div class="movie-info">
+                <div class='title'>
+                    <h2>${element.Title}</h2>
+                    <img src='img/star-icon.png'/>
+                    <p class="rating">${rating}</p>
+                </div>
+                <div class='general-info'>
+                  <p class='runtime'>${runtime}</p>
+                  <p class='genre'>${genre}</p>
+                  <button class='watchlist-btn'>
+                    <img src='img/plus-icon.png'/>
+                    <p class='padding-left'>Watchlist</p>
+                  </button>
+                  <button class='remove-btn hidden'>
+                    <img src='img/minus-icon.png'/>
+                    <p class='padding-left'>Remove</p>
+                  </button>
+                </div>
+                <div class='more-info'>
+                  <p class='plot'>${plot}</p>
+                  <p class='full-plot'>${fullPlot}</p>
+                </div>
+            </div>
+        </div>`;
     });
+
+    //  Use Promise.all to wait for all movie HTML to be ready
+    const movieHTMLArray = await Promise.all(moviePromises);
+    mainEl.innerHTML = movieHTMLArray.join("");
+
+    //  Ensure watchlist movies have the correct button
+    checkIfOnTheWatchlistPage();
   }
 }
 
@@ -172,6 +178,7 @@ function displayWatchlistMovies() {
         <p>Let's add some movies!</p>
       </a>`;
   } else {
+    // display the movies from the watchlist
     watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
 
     displayWatchlist.innerHTML = "";
@@ -181,21 +188,56 @@ function displayWatchlistMovies() {
         `http://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
       );
       const data = await res.json();
+      await getMoreInfo(movieId);
 
       displayWatchlist.innerHTML += `
-    <div class="movie" data-id="${data.imdbID}">
-      <img class='poster' src="${data.Poster}" alt="${data.Title}" />
-      <div class="movie-info">
-        <h2>${data.Title}</h2>
-        <p class="rating">${data.imdbRating}</p>
-        <p class='runtime'>${data.Runtime}</p>
-        <p class='genre'>${data.Genre}</p>
-        <button class='remove-btn'>
-          <img src='img/minus-icon.png'/>
-          <p class='padding-left'>Remove</p>
-        </button>
-      </div>
-    </div>`;
+        <div class="movie" data-id="${data.imdbID}">
+            <img class='poster' src="${data.Poster}" alt="${data.Title}" />
+            <div class="movie-info">
+                <div class='title'>
+                    <h2>${data.Title}</h2>
+                    <img src='img/star-icon.png'/>
+                    <p class="rating">${rating}</p>
+                </div>
+                <div class='general-info'>
+                  <p class='runtime'>${runtime}</p>
+                  <p class='genre'>${genre}</p>
+                  <button class='watchlist-btn hidden'>
+                    <img src='img/plus-icon.png'/>
+                    <p class='padding-left'>Watchlist</p>
+                  </button>
+                  <button class='remove-btn'>
+                    <img src='img/minus-icon.png'/>
+                    <p class='padding-left'>Remove</p>
+                  </button>
+                </div>
+                <div class='more-info'>
+                  <p class='plot'>${plot}</p>
+                  <p class='full-plot'>${fullPlot}</p>
+                </div>
+            </div>
+        </div>`;
     });
   }
+}
+
+function checkIfOnTheWatchlistPage() {
+  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+
+  mainEl.querySelectorAll(".movie").forEach((movie) => {
+    if (watchlistArr.includes(movie.dataset.id)) {
+      movie.querySelector(".watchlist-btn").classList.toggle("hidden");
+      movie.querySelector(".remove-btn").classList.toggle("hidden");
+    }
+  });
+}
+
+async function getTheFullPlot(imdbID) {
+  const res = await fetch(
+    `http://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
+  );
+  const data = await res.json();
+  console.log(data);
+  fullPlot = data.Plot;
+  return fullPlot;
 }
