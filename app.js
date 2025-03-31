@@ -12,7 +12,7 @@ let watchlistArr = [];
 // check if there is a watchlist in the localStorage and if the user is on the watchlist page
 if (
   localStorage.getItem("watchlist") &&
-  window.location.href.includes("watchlist.html")
+  window.location.href.includes("watchlist")
 ) {
   // display the movies from the watchlist
   displayWatchlistMovies();
@@ -61,13 +61,13 @@ mainEl.addEventListener("click", (e) => {
     localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
 
     e.target.parentElement.classList.toggle("hidden");
-    if (window.location.href.includes("index.html")) {
+    if (!window.location.href.includes("watchlist")) {
       e.target.parentElement.parentElement
         .querySelector(".watchlist-btn")
         .classList.toggle("hidden");
     }
     // remove the movie from the watchlist without reloading the page
-    if (window.location.href.includes("watchlist.html")) {
+    if (window.location.href.includes("watchlist")) {
       e.target.parentElement.parentElement.parentElement.parentElement.remove();
     }
   }
@@ -78,7 +78,7 @@ document.addEventListener("storage", () => {
 });
 
 // get the movies by clicking the search button
-if (window.location.href.includes("index.html")) {
+if (!window.location.href.includes("watchlist")) {
   searchBtn.addEventListener("click", getMovie);
   // get the movies by pressing the enter key
   searchInput.addEventListener("keydown", (e) => {
