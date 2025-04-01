@@ -96,7 +96,7 @@ document.addEventListener("click", (e) => {
 
 async function getMovie() {
   const res = await fetch(
-    `http://www.omdbapi.com/?apikey=9b9e3e76&plot=&s=${searchInput.value.replace(
+    `https://www.omdbapi.com/?apikey=9b9e3e76&plot=&s=${searchInput.value.replace(
       / /g,
       "+"
     )}&`
@@ -152,7 +152,7 @@ async function getMovie() {
 // get the more info about the movie using the imdbID
 async function getMoreInfo(imdbID) {
   const res = await fetch(
-    `http://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
+    `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
   );
   const data = await res.json();
   console.log(data);
@@ -185,7 +185,7 @@ function displayWatchlistMovies() {
 
     watchlistArr.forEach(async (movieId) => {
       const res = await fetch(
-        `http://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
+        `https://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
       );
       const data = await res.json();
       await getMoreInfo(movieId);
@@ -234,7 +234,7 @@ function checkIfOnTheWatchlistPage() {
 
 async function getTheFullPlot(imdbID) {
   const res = await fetch(
-    `http://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
+    `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
   );
   const data = await res.json();
   console.log(data);
