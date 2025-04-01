@@ -145,7 +145,9 @@ async function getMovie() {
     mainEl.innerHTML = movieHTMLArray.join("");
 
     //  Ensure watchlist movies have the correct button
-    checkIfOnTheWatchlistPage();
+    if (localStorage.getItem("watchlist")) {
+      checkIfOnTheWatchlistPage();
+    }
   }
 }
 
