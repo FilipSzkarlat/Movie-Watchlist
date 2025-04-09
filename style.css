@@ -30,7 +30,7 @@ header {
 }
 
 header h1 {
-  font-size: 3em;
+  font-size: 2em;
 }
 
 header a {
@@ -48,13 +48,13 @@ header a:focus {
 /* NAV */
 nav {
   display: flex;
-  justify-content: center;
   position: absolute;
   top: 189px;
+  left: 1vw;
   height: 38px;
   border-radius: 6px;
   overflow: hidden;
-  width: calc(100% - 6em);
+  width: 98vw;
 }
 
 nav button,
@@ -87,10 +87,6 @@ nav img {
   background-color: #2e2e2f;
 }
 
-nav img {
-  padding-right: 0;
-}
-
 /* MAIN */
 main {
   flex-direction: column;
@@ -106,6 +102,7 @@ main img {
 
 .movie {
   display: flex;
+  flex-direction: column;
   align-items: center;
   width: 100%;
   gap: 1.5em;
@@ -156,7 +153,7 @@ main h2 {
 }
 
 .poster {
-  width: 15vw;
+  width: 40vw;
 }
 
 .movie-info {
@@ -212,7 +209,26 @@ main h2 {
   display: none;
 }
 
-@media (min-width: 1000px) {
+@media (width >=400px) {
+  nav {
+    width: calc(100% - 6em);
+    left: calc((100vw - calc(100% - 6em)) / 2);
+  }
+}
+
+@media (width >= 600px) {
+  .movie {
+    flex-direction: row;
+  }
+  .poster {
+    width: 15vw;
+  }
+}
+
+@media (width >= 1000px) {
+  header h1 {
+    font-size: 3em;
+  }
   .movie {
     width: 50%;
   }

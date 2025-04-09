@@ -28,7 +28,7 @@ mainEl.addEventListener("click", (e) => {
   if (e.target.parentElement.classList.contains("watchlist-btn")) {
     const movieId = e.target.closest(".movie").dataset.id; // Get imdbID
     // add the movie to the watchlist array
-    if (!watchlistArr.includes(movieId)) {
+    if (!watchlistArr.includes(movieId) && watchlistArr !== null) {
       watchlistArr.push(movieId);
     }
 
@@ -49,9 +49,7 @@ document.addEventListener("storage", () => {
 // remove movie from watchlist
 mainEl.addEventListener("click", (e) => {
   // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
-  if (localStorage.getItem("watchlist")) {
-    watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
-  }
+  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
   if (e.target.parentElement.classList.contains("remove-btn")) {
     const movieId = e.target.closest(".movie").dataset.id;
 
@@ -157,7 +155,6 @@ async function getMoreInfo(imdbID) {
     `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
   );
   const data = await res.json();
-  console.log(data);
   rating = data.imdbRating;
   runtime = data.Runtime;
   genre = data.Genre;
