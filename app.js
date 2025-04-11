@@ -42,10 +42,6 @@ mainEl.addEventListener("click", (e) => {
   }
 });
 
-document.addEventListener("storage", () => {
-  displayWatchlist.innerHTML = localStorage.getItem("watchlist");
-});
-
 // remove movie from watchlist
 mainEl.addEventListener("click", (e) => {
   // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
@@ -63,6 +59,13 @@ mainEl.addEventListener("click", (e) => {
       e.target.parentElement.parentElement
         .querySelector(".watchlist-btn")
         .classList.toggle("hidden");
+    }
+    if (localStorage.getItem("watchlist") === "[]") {
+      displayWatchlist.innerHTML = `<p>Your watchlist is looking a little empty...</p>
+      <a href="index.html" class="add-movie-btn">
+        <img class="icon" src="img/plus-icon.png" alt="simple plus icon" />
+        <p>Let's add some movies!</p>
+      </a>`;
     }
     // remove the movie from the watchlist without reloading the page
     if (window.location.href.includes("watchlist")) {
