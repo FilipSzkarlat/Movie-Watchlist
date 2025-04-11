@@ -89,9 +89,13 @@ if (!window.location.href.includes("watchlist")) {
   });
 }
 
+// show the full plot of the movie by clicking the read more button
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("read-more-info")) {
-    e.target.parentElement.innerHTML = fullPlot;
+    e.target.parentElement.parentElement.querySelector(
+      ".full-plot"
+    ).style.display = "block";
+    e.target.parentElement.style.display = "none";
   }
 });
 
