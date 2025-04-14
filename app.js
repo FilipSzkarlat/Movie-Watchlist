@@ -9,14 +9,7 @@ let plot = "dupa";
 let fullPlot = "dupa";
 let watchlistArr = [];
 
-// check if there is a watchlist in the localStorage and if the user is on the watchlist page
-if (
-  localStorage.getItem("watchlist") &&
-  window.location.href.includes("watchlist")
-) {
-  // display the movies from the watchlist
-  displayWatchlistMovies();
-}
+
 // add movie to watchlist
 mainEl.addEventListener("click", (e) => {
   // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
@@ -78,26 +71,7 @@ document.addEventListener("storage", () => {
   displayWatchlist.innerHTML = localStorage.getItem("watchlist");
 });
 
-// get the movies by clicking the search button
-if (!window.location.href.includes("watchlist")) {
-  searchBtn.addEventListener("click", getMovie);
-  // get the movies by pressing the enter key
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      getMovie();
-    }
-  });
-}
 
-// show the full plot of the movie by clicking the read more button
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("read-more-info")) {
-    e.target.parentElement.parentElement.querySelector(
-      ".full-plot"
-    ).style.display = "block";
-    e.target.parentElement.style.display = "none";
-  }
-});
 
 async function getMovie() {
   const res = await fetch(
