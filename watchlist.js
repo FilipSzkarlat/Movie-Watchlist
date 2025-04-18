@@ -55,13 +55,14 @@ function displayWatchlistMovies() {
     displayWatchlist.innerHTML = "";
 
     watchlistArr.forEach(async (movieId) => {
-      const res = await fetch(
-        `https://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
-      );
-      const data = await res.json();
-      await getMoreInfo(movieId);
+      try {
+        const res = await fetch(
+          `https://www.omdbapi.com/?apikey=9b9e3e76&i=${movieId}`
+        );
+        const data = await res.json();
+        await getMoreInfo(movieId);
 
-      displayWatchlist.innerHTML += `
+        displayWatchlist.innerHTML += `
           <div class="movie" data-id="${data.imdbID}">
               <img class='poster' src="${data.Poster}" alt="${data.Title}" />
               <div class="movie-info">
@@ -88,37 +89,48 @@ function displayWatchlistMovies() {
                   </div>
               </div>
           </div>`;
+      } catch (err) {
+        console.error("Error fetching movie data:", err);
+      }
     });
   }
 }
 
 // get the more info about the movie using the imdbID
 async function getMoreInfo(imdbID) {
-  const res = await fetch(
-    `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
-  );
-  const data = await res.json();
-  rating = data.imdbRating;
-  runtime = data.Runtime;
-  genre = data.Genre;
-  if (data.Plot.length > 100 && window.innerWidth < 1000) {
-    fullPlot = data.Plot;
-    data.Plot =
-      data.Plot.slice(0, 100) +
-      "..." +
-      `<span class='read-more-info'>Read more</span>`;
+  try {
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
+    );
+    const data = await res.json();
+    rating = data.imdbRating;
+    runtime = data.Runtime;
+    genre = data.Genre;
+    if (data.Plot.length > 100 && window.innerWidth < 1000) {
+      fullPlot = data.Plot;
+      data.Plot =
+        data.Plot.slice(0, 100) +
+        "..." +
+        `<span class='read-more-info'>Read more</span>`;
+    }
+    plot = data.Plot;
+  } catch (err) {
+    console.error("Error fetching movie data:", err);
   }
-  plot = data.Plot;
 }
 
 async function getTheFullPlot(imdbID) {
-  const res = await fetch(
-    `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
-  );
-  const data = await res.json();
-  console.log(data);
-  fullPlot = data.Plot;
-  return fullPlot;
+  try {
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
+    );
+    const data = await res.json();
+    console.log(data);
+    fullPlot = data.Plot;
+    return fullPlot;
+  } catch (err) {
+    console.error("Error fetching movie data:", err);
+  }
 }
 
 // show the full plot of the movie by clicking the read more button
