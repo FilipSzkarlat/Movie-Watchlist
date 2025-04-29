@@ -1,7 +1,5 @@
 const searchInput = document.getElementById("search");
-const searchBtn = document.getElementById("search-btn");
 const mainEl = document.querySelector("main");
-const displayWatchlist = document.getElementById("display-watchlist");
 let rating = "dupa";
 let runtime = "dupa";
 let genre = "dupa";
@@ -9,24 +7,25 @@ let plot = "dupa";
 let fullPlot = "dupa";
 let watchlistArr = [];
 
-async function getMovie() {
-  const res = await fetch(
-    `https://www.omdbapi.com/?apikey=9b9e3e76&plot=&s=${searchInput.value.replace(
-      / /g,
-      "+"
-    )}&`
-  );
-  const data = await res.json();
+export async function getMovie() {
+  try {
+    const res = await fetch(
+      `https://www.omdbapi.com/?apikey=9b9e3e76&plot=&s=${searchInput.value.replace(
+        / /g,
+        "+"
+      )}&`
+    );
+    const data = await res.json();
 
-  mainEl.innerHTML = "";
+    mainEl.innerHTML = "";
 
-  if (data.Search === undefined) {
-    mainEl.innerHTML = `<p>Unable to find what you’re looking for. Please try another search.</p>`;
-  } else {
-    //  Make sure to declare `moviePromises` before using it
-    let moviePromises = data.Search.map(async (element) => {
-      await getMoreInfo(element.imdbID);
-      return `
+    if (data.Search === undefined) {
+      mainEl.innerHTML = `<p>Unable to find what you’re looking for. Please try another search.</p>`;
+    } else {
+      //  Make sure to declare `moviePromises` before using it
+      let moviePromises = data.Search.map(async (element) => {
+        await getMoreInfo(element.imdbID);
+        return `
           <div class="movie" data-id="${element.imdbID}">
               <img class='poster' src="${element.Poster}" alt="${element.Title}" />
               <div class="movie-info">
@@ -53,20 +52,24 @@ async function getMovie() {
                   </div>
               </div>
           </div>`;
-    });
-    //  Use Promise.all to wait for all movie HTML to be ready
-    const movieHTMLArray = await Promise.all(moviePromises);
-    mainEl.innerHTML = movieHTMLArray.join("");
+      });
+      //  Use Promise.all to wait for all movie HTML to be ready
+      const movieHTMLArray = await Promise.all(moviePromises);
+      mainEl.innerHTML = movieHTMLArray.join("");
 
-    //  Ensure watchlist movies have the correct button
-    if (localStorage.getItem("watchlist")) {
-      checkIfOnTheWatchlistPage();
+      //  Ensure watchlist movies have the correct button
+      if (localStorage.getItem("watchlist")) {
+        checkIfOnTheWatchlistPage();
+      }
     }
+  } catch (error) {
+    console.log("Error fetching movie data:", error);
   }
 }
 
 // get the more info about the movie using the imdbID
 async function getMoreInfo(imdbID) {
+  try {
     const res = await fetch(
       `https://www.omdbapi.com/?apikey=9b9e3e76&i=${imdbID}&`
     );
@@ -82,5 +85,38 @@ async function getMoreInfo(imdbID) {
         `<span class='read-more-info'>Read more</span>`;
     }
     plot = data.Plot;
+  } catch (error) {
+    console.log("Error fetching movie data:", error);
   }
-  
+}
+
+export function checkIfOnTheWatchlistPage() {
+  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+
+  mainEl.querySelectorAll(".movie").forEach((movie) => {
+    watchlistArr.forEach((movieId) => {
+      if (movieId.movieId === movie.dataset.id) {
+        movie.querySelector(".watchlist-btn").classList.toggle("hidden");
+        movie.querySelector(".remove-btn").classList.toggle("hidden");
+      }
+    });
+  });
+}
+
+export function removeMovieFromWatchlist(e) {
+  // sync the watchlistArr with the localStorage if there is a watchlist in the localStorage
+
+  watchlistArr = JSON.parse(localStorage.getItem("watchlist"));
+  const movieId = e.target.closest(".movie").dataset.id;
+
+  // Remove the movie by filtering out its imdbID
+
+  watchlistArr = watchlistArr.filter((movie) => movie.movieId !== movieId);
+
+  localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+  e.target.parentElement.classList.toggle("hidden");
+  e.target.parentElement.parentElement
+    .querySelector(".watchlist-btn")
+    .classList.toggle("hidden");
+}
