@@ -12,11 +12,9 @@ let watchlistArr = [];
 // get the movies by clicking the search button
 searchBtn.addEventListener("click", getMovie);
 // get the movies by pressing the enter key
-searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    getMovie();
-  }
-});
+searchInput.addEventListener("keydown", (e) =>
+  e.key === "Enter" ? getMovie() : null
+);
 
 // add movie to watchlist
 mainEl.addEventListener("click", (e) => {

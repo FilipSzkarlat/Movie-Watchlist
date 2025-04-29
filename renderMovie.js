@@ -58,9 +58,7 @@ export async function getMovie() {
       mainEl.innerHTML = movieHTMLArray.join("");
 
       //  Ensure watchlist movies have the correct button
-      if (localStorage.getItem("watchlist")) {
-        checkIfOnTheWatchlistPage();
-      }
+      localStorage.getItem("watchlist") ? checkIfOnTheWatchlistPage() : null;
     }
   } catch (error) {
     console.log("Error fetching movie data:", error);
