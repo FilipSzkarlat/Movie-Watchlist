@@ -1,4 +1,8 @@
-import { getMovie, removeMovieFromWatchlist } from "./renderMovie.js";
+import {
+  getMovie,
+  removeMovieFromWatchlist,
+  showFullPlot,
+} from "./renderMovie.js";
 
 const searchInput = document.getElementById("search");
 const searchBtn = document.getElementById("search-btn");
@@ -35,15 +39,7 @@ mainEl.addEventListener("click", (e) => {
 
     // show the full plot of the movie by clicking the read more button
     document.addEventListener("click", (e) => {
-      if (e.target.classList.contains("read-more-info")) {
-        console.log(
-          e.target.parentElement.parentElement.querySelector(".full-plot")
-        );
-        e.target.parentElement.parentElement.querySelector(
-          ".full-plot"
-        ).style.display = "block";
-        e.target.parentElement.style.display = "none";
-      }
+      showFullPlot(e);
     });
 
     // save the watchlist array to the localStorage

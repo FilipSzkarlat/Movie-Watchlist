@@ -1,10 +1,10 @@
 const searchInput = document.getElementById("search");
 const mainEl = document.querySelector("main");
-let rating = "dupa";
-let runtime = "dupa";
-let genre = "dupa";
-let plot = "dupa";
-let fullPlot = "dupa";
+let rating;
+let runtime;
+let genre;
+let plot;
+let fullPlot;
 let watchlistArr = [];
 
 export async function getMovie() {
@@ -119,4 +119,13 @@ export function removeMovieFromWatchlist(e) {
   e.target.parentElement.parentElement
     .querySelector(".watchlist-btn")
     .classList.toggle("hidden");
+}
+
+export function showFullPlot(e) {
+  if (e.target.classList.contains("read-more-info")) {
+    e.target.parentElement.parentElement.querySelector(
+      ".full-plot"
+    ).style.display = "block";
+    e.target.parentElement.style.display = "none";
+  }
 }
